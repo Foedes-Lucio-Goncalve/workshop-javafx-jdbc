@@ -1,18 +1,29 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.mysql.cj.util.Util;
+
 import application.Main;
+import gui.util.Alerts;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Department;
 import model.swevices.DepartmentService;
@@ -31,14 +42,16 @@ public class DepartmentListController implements Initializable {
 	private TableColumn<Department,String> tableColumnName;
 	
 	
-	private ObservableList<Department> obsList;
+	private ObservableList<Department> obsList; 
 
 	@FXML
 	private Button btNew;
 
 	@FXML
-	public void onBNewAction() {
-		System.out.println("onBNewAction");
+	public void onBNewAction(ActionEvent evento) {
+	 //	System.out.println("onBNewAction");
+		Stage parentStage = Utils.CurrentState(evento);
+		createDialogForm("/gui/DepartmentForm.fxml",parentStage);
 	}
 
 	public void setDepartmentService(DepartmentService service) {
@@ -66,5 +79,23 @@ public class DepartmentListController implements Initializable {
         List<Department> list = service.findAll();
     	obsList = FXCollections.observableArrayList(list);
     	tableViewDepartment.setItems(obsList);
+    }
+    private void createDialogForm(String nomeAbsoluto, Stage parentStage) {
+    	try {
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto));
+			Pane Panel = loader.load();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("entre com os dados do departamento");
+			dialogStage.setScene(new Scene(Panel));
+			dialogStage.setResizable(false);
+			dialogStage.initOwner(parentStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+    		
+    	}
+    	catch(IOException e) {
+    		Alerts.showAlert("exception error", "error", e.getMessage(), AlertType.ERROR);
+    	}
     }
 }
