@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -35,12 +36,15 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onmenuItemDepartamentoAction() {
-		loadView2("/gui/DepartmentList.fxml");
+		loadView("/gui/DepartmentList.fxml",(DepartmentListController controller) ->{
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
+		});
 	}
 
 	@FXML
 	public void onmenuItemAboutAction() {
-		loadView("/gui/about.fxml");
+		loadView("/gui/about.fxml", x -> {});
 	}
 
 	@Override
@@ -49,7 +53,7 @@ public class MainViewController implements Initializable {
 
 	}
 
-	public synchronized void loadView(String nomeAbsoluto) {
+	public synchronized <T> void loadView(String nomeAbsoluto, Consumer<T> initialingAction) {
 
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto));
@@ -61,6 +65,9 @@ public class MainViewController implements Initializable {
 			mainVbox.getChildren().clear();
 			mainVbox.getChildren().add(mainMenu);
 			mainVbox.getChildren().addAll(newVbox.getChildren());
+			
+			T controller = loader.getController();
+			initialingAction.accept(controller);
 
 		} catch (IOException e) {
 			Alerts.showAlert("erro ", "erro carregando a pagina", e.getMessage(), AlertType.ERROR);
