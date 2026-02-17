@@ -2,19 +2,28 @@ package gui;
 
 
 import java.net.URL;
+import java.nio.channels.IllegalSelectorException;
 import java.util.ResourceBundle;
 
+import db.DbException;
+import gui.util.Alerts;
 import gui.util.Constraints;
+import gui.util.Utils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.swevices.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
 
 	private Department entity;
+	
+	private DepartmentService service;
 	
 	@FXML
 	private TextField txtId;
@@ -32,15 +41,41 @@ public class DepartmentFormController implements Initializable {
 	private Button btnCancelar;
 	
 	@FXML
-	public void  onBtnSave() {
-		System.out.println("salvando");
+	public void  onBtnSave(ActionEvent evento ) {
+		if (entity == null)
+		{
+			throw new IllegalStateException("o departamento nao foi instanciado");
+		}
+		if (service == null)
+		{
+			throw new IllegalStateException("o servico nao foi instanciado");
+		}
+		
+		try {
+		
+		entity = getFormData();
+		service.saveOrUpdadte(entity);
+		Utils.CurrentState(evento).close();
+		}
+		catch(DbException e ) {
+			Alerts.showAlert("erro na hora de salvar", null, e.getMessage(), AlertType.ERROR);
+		}
 	}
-	public void  onBtnCancelar() {
-		System.out.println("cancelando");
+	private Department getFormData() {
+		Department obj = new Department();
+		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		obj.setName(txtName.getText());
+		return obj;
+	}
+	public void  onBtnCancelar(ActionEvent evento) {
+		Utils.CurrentState(evento).close();
 	}
 	
 	public void setDepartment(Department entity) {
 		this.entity = entity;
+	}
+	public void setDepartmentService(DepartmentService service) {
+		this.service = service;
 	}
 	
 	
