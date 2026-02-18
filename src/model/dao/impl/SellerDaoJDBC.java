@@ -1,6 +1,5 @@
 package model.dao.impl;
 
-import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +14,6 @@ import db.DbException;
 import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
-import java.sql.Connection;
 
 public class SellerDaoJDBC implements SellerDao {
 
@@ -33,8 +31,8 @@ public class SellerDaoJDBC implements SellerDao {
 					"INSERT INTO seller "
 					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
 					+ "VALUES "
-					+ "(?, ?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
+					+ "(?, ?, ?, ?, ?)");
+				//	Statement.RETURN_GENERATED_KEYS);
 			
 			st.setString(1, obj.getName());
 			st.setString(2, obj.getEmail());

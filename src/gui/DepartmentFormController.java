@@ -131,7 +131,7 @@ public class DepartmentFormController implements Initializable {
 		}
 
 		txtId.setText(String.valueOf(entity.getId()));
-		txtId.setText(entity.getName());
+		txtName.setText(entity.getName());
 	}
 	private void setErrorMessage(Map<String,String> erros) {
 		Set<String> fields = erros.keySet();
