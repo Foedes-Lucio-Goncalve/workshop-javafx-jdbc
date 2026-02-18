@@ -5,9 +5,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.mysql.cj.util.Util;
-
 import application.Main;
+import gui.listerners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -28,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.swevices.DepartmentService;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable,DataChangeListener {
 
 	private DepartmentService service;
 	
@@ -89,6 +88,7 @@ public class DepartmentListController implements Initializable {
 			DepartmentFormController controler = loader.getController();
 			controler.setDepartment(obj);
 			controler.setDepartmentService(new DepartmentService());
+			controler.subscribeDataChangedListerner(this);
 			controler.updateFormData();
 			
 			Stage dialogStage = new Stage();
@@ -104,4 +104,10 @@ public class DepartmentListController implements Initializable {
     		Alerts.showAlert("exception error", "error", e.getMessage(), AlertType.ERROR);
     	}
     }
+
+	@Override
+	public void onDataChanged() {
+		updateTableView();
+		
+	}
 }
