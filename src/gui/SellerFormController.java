@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -119,9 +121,31 @@ public class SellerFormController implements Initializable {
 		if (txtName.getText() == null || txtName.getText().trim().equals("")) {
 			exception.addErro("name", "o campo nao pode ser vazio");
 		}
-
 		obj.setName(txtName.getText());
-
+		
+		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			exception.addErro("email", "o campo nao pode ser vazio");
+		}
+		obj.setEmail(txtEmail.getText());
+		
+		if (dpBrithDate.getValue() == null) {
+			exception.addErro("birthDate", "o campo nao pode ser vazio");
+		}
+		else
+		{
+		Instant instant = Instant.from(dpBrithDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+        obj.setBirthDate(Date.from(instant));
+		}
+		 
+        
+        if (txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {
+			exception.addErro("baseSalary", "o campo nao pode ser vazio");
+		}
+        obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
+        
+		obj.setDepartment(comboBoxDepartment.getValue());
+		
+		
 		if (exception.getErros().size() > 0) {
 			throw exception;
 		}
@@ -195,9 +219,46 @@ public class SellerFormController implements Initializable {
 
 	private void setErrorMessage(Map<String, String> erros) {
 		Set<String> fields = erros.keySet();
-		if (fields.contains("name")) {
-			labelErrorName.setText(erros.get("name"));
-		}
+//		if (fields.contains("name")) {
+//			labelErrorName.setText(erros.get("name"));
+//		}
+//		else
+//		{
+//			labelErrorName.setText(erros.get(""));
+//		}
+		
+		// ternario
+//		labelErrorName.setText(( fields.contains ("name")? erros.get("name"): ""));
+//		labelErrorEmail.setText((fields.contains ("email")? erros.get("email"): ""));
+//		labelErrorBrithDate.setText((fields.contains("birthDate")? erros.get("birthDate"): ""));
+//		labelErrorBaseSalary.setText((fields.contains("baseSalary")? erros.get("baseSalary"): ""));
+		
+//		if (fields.contains("email")) {
+//			labelErrorEmail.setText(erros.get("email"));
+//		}
+//		else {
+//			labelErrorEmail.setText(erros.get(""));
+//		}
+//		
+//		if (fields.contains("birthDate")) {
+//			labelErrorBrithDate.setText(erros.get("birthDate"));
+//		}
+//		else {
+//			labelErrorBrithDate.setText(erros.get(""));
+//		}
+//		if (fields.contains("baseSalary")) {
+//			labelErrorBaseSalary.setText(erros.get("baseSalary"));
+//		}
+//		else {
+//			labelErrorBaseSalary.setText(erros.get(""));
+//		}
+		
+	  	// ternario
+		labelErrorName.setText(( fields.contains ("name")? erros.get("name"): ""));
+		labelErrorEmail.setText((fields.contains ("email")? erros.get("email"): ""));
+		labelErrorBrithDate.setText((fields.contains("birthDate")? erros.get("birthDate"): ""));
+		labelErrorBaseSalary.setText((fields.contains("baseSalary")? erros.get("baseSalary"): ""));
+
 
 	}
 
